@@ -1,0 +1,51 @@
+sys0 = tsunami
+{
+  memory.bits = 30;
+  rom.srm = "rom/cl67srmrom.exe";
+  rom.decompressed = "rom/decompressed.rom";
+  rom.flash = "rom/flash.rom";
+  rom.dpr = "rom/dpr.rom";
+
+  cpu0 = ev68cb
+  {
+    speed = 1250M;
+    icache = true;
+    skip_memtest_hack = true;
+  }
+ 
+  serial0 = serial
+  {
+    port = 21262;
+    action = ""
+  }
+
+  pci0.15 = ali_ide
+  {
+    disk0.0 = file
+    {
+     file =          "../data/disk0.img";
+     serial_number = "VMS";
+     rev_number    = "8.4";
+     model_number  = "OpenVMS8.4";
+     read_only     = false;
+     cdrom         = false;
+     autocreate_size = 4096M;
+    }
+    disk1.0 = file
+    {
+     file          = "../iso/ALPHA084.ISO";
+     read_only     = true;
+     cdrom         = true;
+    }
+  }
+ 
+  pci0.7 = ali
+  {
+    mouse.enabled = false;
+    vga_console = false;
+  }
+ 
+  pci0.19 = ali_usb
+  {
+  }
+}

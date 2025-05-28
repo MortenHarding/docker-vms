@@ -1,0 +1,31 @@
+# Using Debian as a base
+ARG SIMULATOR="axpbox"
+FROM debian:stable-slim AS base
+RUN apt-get update && apt-get install -y make cmake gcc build-essential libpcre3-dev libedit-dev libsdl2-dev libx11-dev libpng-dev libpcap-dev libvdeplug-dev libpoco-dev libxt-dev bridge-utils locales unzip curl git sudo netbase \
+&& rm -rf /var/lib/apt/lists/* \
+&& localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
+&& mkdir -p /opt/simulators/iso \
+&& mkdir -p /opt/simulators/data \
+&& mkdir -p /opt/simulators/log \
+&& mkdir -p /opt/simulators/rom \
+&& mkdir -p /opt/simulators/bin
+ENV LANG=en_US.utf8
+
+RUN git clone https://github.com/lenticularis39/axpbox.git /opt/axpbox 
+WORKDIR /opt/axpbox
+ARG SIMULATOR
+RUN cmake -DCMAKE_BUILD_TYPE="Release" \
+&& make -j$(($(nproc) + 1)) \
+&& cp /opt/axpbox/axpbox /opt/simulators/bin/
+
+FROM base AS final
+WORKDIR /opt/simulators/rom/
+RUN curl -O https://raymii.org/s/inc/downloads/es40-srmon/cl67srmrom.exe
+WORKDIR /opt/simulators/bin/
+COPY startaxpbox.sh es40.org /opt/simulators/bin/
+RUN chmod +x startaxpbox.sh \
+&& ln -s /opt/simulators/rom . \
+&& echo cd /opt/simulators/bin/ >> startaxpbox.sh \
+&& echo ./${SIMULATOR} run >> startaxpbox.sh
+
+ENTRYPOINT ["/bin/bash","./startaxpbox.sh"]

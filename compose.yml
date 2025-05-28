@@ -1,0 +1,25 @@
+# docker compose up --detach
+# docker compose down
+services:
+  vms84:
+    image: "mhardingdk/vms:axpbox"
+    container_name: "vms84" 
+    ports:
+      - "2300:2300"
+      - "21262:21262"      
+    volumes:
+      - "./alpha/data:/opt/simulators/data"    
+      - "./iso:/opt/simulators/iso"
+    stdin_open: true
+    tty: true
+  vms73:
+    image: "mhardingdk/vms:vax8600"
+    container_name: "vms73"
+    ports:
+      - "2303:2303"
+      - "2103:21"   
+    volumes:
+      - "./vms73/data:/opt/simulators/data"
+      - "./iso:/opt/simulators/iso"      
+    stdin_open: true
+    tty: true    

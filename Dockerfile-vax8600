@@ -1,0 +1,29 @@
+# Using Debian as a base
+ARG SIMULATOR="vax8600"
+FROM debian:stable-slim AS base
+RUN apt-get update && apt-get install -y make cmake gcc build-essential libpcre3-dev libedit-dev libsdl2-dev libpng-dev libpcap-dev libvdeplug-dev bridge-utils unzip curl locales git netbase \
+&& rm -rf /var/lib/apt/lists/* \
+&& localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
+&& mkdir -p /opt/simulators/iso \
+&& mkdir -p /opt/simulators/data \
+&& mkdir -p /opt/simulators/log \
+&& mkdir -p /opt/simulators/rom \
+&& mkdir -p /opt/simulators/bin
+ENV LANG=en_US.utf8
+
+RUN git clone https://github.com/simh/simh.git /opt/simh
+WORKDIR /opt/simh
+ARG SIMULATOR
+RUN make ${SIMULATOR} \
+&& cp /opt/simh/BIN/${SIMULATOR} /opt/simulators/bin/ \
+&& rm -rf /opt/simh
+
+FROM base AS final
+WORKDIR /opt/simulators/bin/
+COPY startsimh.sh simh_ini.org /opt/simulators/bin/
+ARG REPLACESIM="s/xxxx/"${SIMULATOR}"/g /opt/simulators/bin/startsimh.sh"
+RUN chmod +x startsimh.sh \
+&& echo ./${SIMULATOR} >> startsimh.sh \
+&& sed -i ${REPLACESIM}
+
+ENTRYPOINT ["/bin/bash","./startsimh.sh"]
