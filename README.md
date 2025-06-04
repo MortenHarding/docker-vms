@@ -986,7 +986,7 @@ docker compose down
 
 ## Connect to the OpenVMS 7.3 console
 
-First attach to the docker container
+Attach to the docker container
 
 ```sh
 docker attach vms73
