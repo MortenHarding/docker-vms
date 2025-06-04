@@ -110,7 +110,7 @@ PLEASE ENTER DATE AND TIME (DD-MMM-YYYY  HH:MM)  04-JUN-2025 14:36
 ```
 
 ```sh
-onfiguring devices . . .
+configuring devices . . .
 Now configuring HSC, RF, and MSCP-served devices . . .
 
 Please check the names of the devices which have been configured,
@@ -172,7 +172,7 @@ ensure the standalone application volume is online and ready.
 Enter "YES" to continue: ^E
 ```
 
-You are know back at the simh emulator prompt
+You are now back at the simh emulator prompt
 
 ```sh
 Simulation stopped, PC: 819C238D (BBC #3,26C(R3),819C23E1)
@@ -189,7 +189,7 @@ sim> boot rq0
 
 ### OpenVMS 7.3 install procedure
 
-This will start the OpenVMS 7.3 installation procedure
+Booting from the restored system disk, will start the OpenVMS 7.3 installation procedure
 
 ```sh
 %SIM-INFO: Loading boot code from internal vmb.exe
@@ -276,9 +276,9 @@ Startup processing continuing...
     to the next question.
 ```
 
-Accept the default volume label OVMSVAXSYS
-Enter "dua3" as the drive holding the distribution media
-Enter "yes" the media is ready
+- Accept the default volume label OVMSVAXSYS
+- Enter "dua3" as the drive holding the distribution media
+- Enter "yes" the media is ready
 
 ```sh
 
@@ -307,7 +307,7 @@ Enter "yes" the media is ready
 
 ```
 
-The above lists the possible software you can select to install.
+The above list shows the possible software you can select to install.
 In this guide, it is only the following 3 options that are installed.
 
 - OpenVMS library
@@ -667,7 +667,7 @@ Is this correct? [Y]: y
 
 ```
 
-AUTOGEN will now execute, followd by a restart of OpenVMS
+AUTOGEN will now execute, followed by a restart of OpenVMS
 
 ```sh
 
@@ -897,7 +897,7 @@ Password:
 ```
 ### Change boot device
 
-Change the boot device in the ./vms73/data/vax8600.ini file, from dua3 to dua0, to boot from the system disk and not the install media.
+Change the boot device in the file ```./vms73/data/vax8600.ini``` from dua3 to dua0, to boot from the system disk and not the install media.
 
 ### Shutdown openVMS
 
@@ -970,9 +970,9 @@ Infinite loop, PC: 9E44E6D3 (BRB 9E44E6D3)
 
 ### Shutdown docker container
 
-Did you change the the boot device in the ./vms73/data/vax8600.ini file ?
+Did you change the the boot device in the file ```./vms73/data/vax8600.ini``` ?
 
-If you did, you can now shutdown the docker container, and at next startup it will boot into OpenVMS 7.3 on the system disk
+If you did change the boot device to dua0, at next startup it will boot into OpenVMS 7.3 on the system disk
 
 ```sh
 
