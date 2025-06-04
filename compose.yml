@@ -17,7 +17,8 @@ services:
     container_name: "vms73"
     ports:
       - "2303:2303"
-      - "2103:21"   
+      - "2103:21"
+      - "5724:5724"   
     volumes:
       - "./vms73/data:/opt/simulators/data"
       - "./iso:/opt/simulators/iso"      
