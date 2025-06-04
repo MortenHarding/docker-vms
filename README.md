@@ -3,9 +3,21 @@
 - [This Repo](#this-repo)
   - [The benefit of this Repo](#the-benefit-of-this-repo)
   - [Prerequisites](#Prerequisites)
-- [Quick start guide](#Quick-start-guide)
-  - [Install the prerequisites](#install-the-prerequisites)
-  - [Start both VMS vax and alpha emulator](#start-both-vms-vax-and-alpha-emulator)
+- [Install guide](#Install-guide)
+  - [Install prerequisites](#install-prerequisites)
+  - [Start docker container](#start-docker-container)
+  - [Install OpenVMS 7.3](#install-openvms-73)
+    - [Connect to OpenVMS 7.3 console](#connect-to-openvms-73-console)
+    - [Restore OpenVMS 7.3 to system disk](#restore-openvms-73-to-system-disk)
+    - [Boot from system disk](#boot-from-system-disk)
+    - [OpenVMS 7.3 install procedure](#openvms-73-install-procedure)
+    - [Change boot device](#change-boot-device)
+    - [Shutdown openVMS](#shutdown-openvms)
+    - [Shutdown docker container](#shutdown-docker-container)
+- [Using the installed docker container](#using-the-installed-docker-container)
+  - [Start docker container](#start-docker-container)
+  - [Connect to the OpenVMS 7.3 console](#connect-to-the-openvms-73-console)
+
 
 # This Repo
 
@@ -27,19 +39,22 @@ you can:
 * [Docker](https://www.docker.com/get-started)
 * [compose.yml](https://github.com/MortenHarding/docker-vms/blob/main/compose.yml). This is the only file required from github repo [docker-vms](https://github.com/MortenHarding/docker-vms)
 
-# Quick start guide
+# Install guide
 
-## Install the prerequisites
+## Install prerequisites
 
 * Install [Docker](https://www.docker.com/get-started). 
 * Download [compose.yml](https://github.com/MortenHarding/docker-vms/blob/main/compose.yml) into an empty directory.
 
-## Start both VMS vax and alpha emulator
+## Start docker container
+This will start VMS vax emulator
 
-* Run the following command from the directory containing [compose.yml](https://github.com/MortenHarding/docker-vms/blob/main/compose.yml).
+Run the following command from the directory containing [compose.yml](https://github.com/MortenHarding/docker-vms/blob/main/compose.yml).
 
 ```sh
-docker compose up -d
+
+docker compose up -d vms73
+
 ```
 
 This will 
@@ -50,7 +65,7 @@ This will
 
 You can now logon to the session and install OpenVMS 7.3 and OpenVMS 8.4
 
-## Install OpenVMS 7.4
+## Install OpenVMS 7.3
 
 ### Connect to OpenVMS 7.3 console
 
@@ -86,8 +101,6 @@ OpenVMS (TM) VAX Version X7G7 Major version id = 1 Minor version id = 0
 %WBM-I-WBMINFO Write Bitmap has successfully completed initialization.
 PLEASE ENTER DATE AND TIME (DD-MMM-YYYY  HH:MM)
 ```
-
-## Install OpenVMS 8.4
 
 When you have connected to the OpenVMS 7.3 console, you will see the above output.
 Enter the date & time when prompted.
@@ -130,18 +143,25 @@ Available device  MTA7:                            device type TE16
 When all devices are available enter "yes"
 
 ```sh
+
 Enter "YES" when all needed devices are available: yes
 
 %BACKUP-I-IDENT, Stand-alone BACKUP T7.2; the date is  4-JUN-2025 14:37:56.01
+
 ```
+
+### Restore OpenVMS 7.3 to system disk
 
 Restore OpenVMS 7.3 from the install media to the system disk
 
 ```sh
+
 $ backup dua3:vms071.b/save_set dua0:
+
 ```
 
 When the backup process has finished and you are asked to enter "yes", halt the system by pressing 'CTRL + E'
+
 ```sh
 %BACKUP-I-PROCDONE, operation completed.  Processing finished at  4-JUN-2025 14:38:09.35
 If you do not want to perform another standalone BACKUP operation,
@@ -153,15 +173,23 @@ Enter "YES" to continue: ^E
 ```
 
 You are know back at the simh emulator prompt
+
 ```sh
 Simulation stopped, PC: 819C238D (BBC #3,26C(R3),819C23E1)
 sim>
 ```
 
+### Boot from system disk
+
 Boot from the restored system disk
+
 ```sh
 sim> boot rq0
 ```
+
+### OpenVMS 7.3 install procedure
+
+This will start the OpenVMS 7.3 installation procedure
 
 ```sh
 %SIM-INFO: Loading boot code from internal vmb.exe
@@ -181,8 +209,11 @@ sim> boot rq0
                  System device: RA92 - _DUA0:
                    Free Blocks: 2854566
                       CPU type: 04-00
+```
 
+When prompted, enter the date & time
 
+```sh
 
 * Please enter the date and time (DD-MMM-YYYY HH:MM) 04-jun-2025 14:39
 
@@ -243,6 +274,13 @@ Startup processing continuing...
     You can indicate a volume label of 1 to 12 characters in length.  If you
     want to use the default name of OVMSVAXSYS, press RETURN in response
     to the next question.
+```
+
+Accept the default volume label OVMSVAXSYS
+Enter "dua3" as the drive holding the distribution media
+Enter "yes" the media is ready
+
+```sh
 
 * Enter the volume label for this system disk [OVMSVAXSYS]: 
 
@@ -266,6 +304,17 @@ Startup processing continuing...
     o DECnet Phase IV networking                   -    800 blocks
 
     Space remaining on system disk:  2854377 blocks
+
+```
+
+The above lists the possible software you can select to install.
+In this guide, it is only the following 3 options that are installed.
+
+- OpenVMS library
+- OpenVMS optional
+- OpenVMS Help Messages
+
+```sh   
 
 * Do you want to install the OpenVMS library files? (Y/N) y
 
@@ -381,6 +430,11 @@ Startup processing continuing...
     Space remaining on system disk:  2772777 blocks
 
 * Is this correct? (Y/N) y
+```
+
+Accept the choices made by entering "y", and the install will begin
+
+```sh
 
     Restoring OpenVMS library save set ...
 %BACKUP-I-STARTVERIFY, starting verification pass
@@ -435,6 +489,11 @@ The following product has been registered:
     will be checked and verified.  Any passwords that can be guessed easily
     will not be accepted.
 
+```
+
+You will be asked to enter passwords for the above listed accounts
+
+```sh
 
 
 * Enter password for SYSTEM: 
@@ -479,6 +538,12 @@ The following product has been registered:
 %UAF-I-RDBDONEMSG, rights database modified
 
     Creating MODPARAMS.DAT database file, SYS$SYSTEM:MODPARAMS.DAT
+
+```
+
+Choose your own NODE name and SYSTEMID (must be above 1024)
+
+```sh
 
 * Please enter the SCSNODE name: vms73
 
@@ -525,6 +590,11 @@ The following product has been registered:
     If you have Product Authorization Keys (PAKs) to register, you can
     register them now.
 
+```
+
+If you have a license you can register it now.
+
+```sh
 * Do you want to register any Product Authorization Keys? (Y/N): n
 
 ********************************************************************************
@@ -543,7 +613,11 @@ The following product has been registered:
 
 %UTC-I-UPDTIME, updating Time Zone information in SYS$COMMON:[SYSEXE]
 
+```
 
+Select your time zone
+
+```sh
     Configuring the Local Time Zone
 
 
@@ -591,6 +665,11 @@ Is this correct? [Y]: y
 
 ********************************************************************************
 
+```
+
+AUTOGEN will now execute, followd by a restart of OpenVMS
+
+```sh
 
     Running AUTOGEN to compute the new SYSTEM parameters ...
 
@@ -802,6 +881,11 @@ Attributes:               none
 
  Welcome to OpenVMS (TM) VAX Operating System, Version V7.3    
 
+```
+
+The installation is now complete and you can login with the system acount and password entered previosly
+
+```sh
 
 Username: system
 
@@ -809,6 +893,17 @@ Password:
 %LICENSE-I-NOLICENSE, no license is active for this software product
 %LOGIN-S-LOGOPRCON, login allowed from OPA0:
  Welcome to OpenVMS (TM) VAX Operating System, Version V7.3
+
+```
+### Change boot device
+
+Change the boot device in the ./vms73/data/vax8600.ini file, from dua3 to dua0, to boot from the system disk and not the install media.
+
+### Shutdown openVMS
+
+Shutdown OpenVMS 7.3
+
+```sh
 
 $ shutdown
 
@@ -836,7 +931,7 @@ Message from user JOB_CONTROL on VMS73
 -RMS-E-FNF, file not found
 
 
-SHUTDOWN message on VMS73 from user SYSTEM at _VMS73$OPA0:   12:42:39
+SHUTDOWN message on VMS73 from user SYSTEM at _VMS73$OPA0:   12:42:39
 VMS73 will shut down in 0 minutes; back up LATER.  Please log off node VMS73.
 SHUTDOWN
 
@@ -871,4 +966,48 @@ Operator _VMS73$OPA0: has been disabled, username SYSTEM
 	SYSTEM SHUTDOWN COMPLETE - use console to halt system
 
 Infinite loop, PC: 9E44E6D3 (BRB 9E44E6D3)
+```
+
+### Shutdown docker container
+
+Did you change the the boot device in the ./vms73/data/vax8600.ini file ?
+
+If you did, you can now shutdown the docker container, and at next startup it will boot into OpenVMS 7.3 on the system disk
+
+```sh
+
+docker compose down
+
+```
+
+# Using the installed docker container
+
+- [Start docker container](#start-docker-container)
+
+## Connect to the OpenVMS 7.3 console
+
+First attach to the docker container
+
+```sh
+docker attach vms73
+```
+
+You should now be asked to login to OpenVMS 7.3
+
+```sh
+  Accounting information:
+  Buffered I/O count:            1532         Peak working set size:    1697
+  Direct I/O count:               566         Peak page file size:      5144
+  Page faults:                   5063         Mounted volumes:             0
+  Charged CPU time:           0 00:00:04.24   Elapsed time:     0 00:00:06.91
+
+ Welcome to OpenVMS (TM) VAX Operating System, Version V7.3    
+
+Username: system
+
+Password: 
+%LICENSE-I-NOLICENSE, no license is active for this software product
+%LOGIN-S-LOGOPRCON, login allowed from OPA0:
+ Welcome to OpenVMS (TM) VAX Operating System, Version V7.3
+
 ```
