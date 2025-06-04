@@ -47,13 +47,13 @@ you can:
 * Download [compose.yml](https://github.com/MortenHarding/docker-vms/blob/main/compose.yml) into an empty directory.
 
 ## Start docker container
-This will start VMS vax emulator
+This will start VMS vax and alpha emulator
 
 Run the following command from the directory containing [compose.yml](https://github.com/MortenHarding/docker-vms/blob/main/compose.yml).
 
 ```sh
 
-docker compose up -d vms73
+docker compose up -d
 
 ```
 
