@@ -897,7 +897,7 @@ Password:
 ```
 ### Change boot device
 
-Change the boot device in the file ```./vms73/data/vax8600.ini``` from dua3 to dua0, to boot from the system disk and not the install media.
+Change the boot device in the file ```./vms73/data/vax8600.ini``` from rq3 to rq0, to boot from the system disk and not the install media.
 
 ### Shutdown openVMS
 
@@ -972,7 +972,7 @@ Infinite loop, PC: 9E44E6D3 (BRB 9E44E6D3)
 
 Did you change the the boot device in the file ```./vms73/data/vax8600.ini``` ?
 
-If you did change the boot device to dua0, at next startup it will boot into OpenVMS 7.3 on the system disk
+If you did change the boot device to rq0, at next startup it will boot into OpenVMS 7.3 on the system disk
 
 ```sh
 
