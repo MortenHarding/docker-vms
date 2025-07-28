@@ -156,7 +156,7 @@ Restore OpenVMS 7.3 from the install media to the system disk
 
 ```sh
 
-$ backup dua3:vms071.b/save_set dua0:
+$ backup dua3:vms073.b/save_set dua0:
 
 ```
 
